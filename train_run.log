@@ -1,0 +1,38 @@
+Building features from dataset: dataset/phishing_site_urls.csv
+Rows target: 2000
+Extracting features:   0%|          | 0/2000 [00:00<?, ?url/s]Extracting features: 100%|██████████| 2000/2000 [00:00<00:00, 25894.28url/s]
+Saved feature cache to: features.csv
+Feature matrix shape: (2000, 9), labels shape: (2000,)
+
+Training and evaluating models...
+[16:01:08] Starting Logistic Regression training...
+Logistic Regression  acc=0.8000 prec=0.8448 rec=0.7350 f1=0.7861 time=0.00s
+[16:01:08] Starting Decision Tree training...
+Decision Tree        acc=0.8550 prec=0.8586 rec=0.8500 f1=0.8543 time=0.00s
+[16:01:08] Starting Random Forest training...
+Random Forest        acc=0.8650 prec=0.8614 rec=0.8700 f1=0.8657 time=0.08s
+  Random Forest feature importance (top 5):
+  - url_length: 0.3847
+  - domain_length: 0.1815
+  - digit_count: 0.1749
+  - dot_count: 0.1136
+  - suspicious_keyword_count: 0.0901
+[16:01:08] Starting SVM training...
+SVM                  acc=0.8425 prec=0.8743 rec=0.8000 f1=0.8355 time=0.02s
+[16:01:08] Starting Gradient Boosting training...
+Gradient Boosting    acc=0.8675 prec=0.8889 rec=0.8400 f1=0.8638 time=0.09s
+
+Best model: Random Forest (F1=0.8657, Accuracy=0.8650)
+
+Model Comparison Summary
+============================================================================================
+Model                     Accuracy   Precision      Recall    F1-score    Train(s)
+--------------------------------------------------------------------------------------------
+Random Forest               0.8650      0.8614      0.8700      0.8657        0.08
+Gradient Boosting           0.8675      0.8889      0.8400      0.8638        0.09
+Decision Tree               0.8550      0.8586      0.8500      0.8543        0.00
+SVM                         0.8425      0.8743      0.8000      0.8355        0.02
+Logistic Regression         0.8000      0.8448      0.7350      0.7861        0.00
+============================================================================================
+Saved best model to: phishing_model.pkl
+Total pipeline time: 0.40s
