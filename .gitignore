@@ -3,3 +3,4 @@
 phishing_model.pkl
 features.csv
 *.log
+.env

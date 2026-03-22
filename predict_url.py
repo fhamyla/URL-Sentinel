@@ -9,7 +9,7 @@ import sys
 import numpy as np
 
 from feature_extractor import extract_features
-
+from db import insert_prediction
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Predict whether a URL is phishing or legitimate.")
@@ -30,9 +30,11 @@ def main() -> None:
         sys.exit(1)
 
     threshold = 0.5
+    best_model_name = "Unknown"
     if isinstance(loaded_object, dict) and "model" in loaded_object:
         model = loaded_object["model"]
         threshold = float(loaded_object.get("threshold", 0.5))
+        best_model_name = loaded_object.get("best_model_name", "Unknown")
     else:
         model = loaded_object
 
@@ -57,6 +59,12 @@ def main() -> None:
         print(f"⚠️ Phishing (score={score:.4f}, threshold={threshold:.4f})")
     else:
         print(f"✅ Legitimate (score={score:.4f}, threshold={threshold:.4f})")
+
+    saved = insert_prediction(url, prediction, score, threshold, best_model_name)
+    if saved:
+        print(f"✓ Prediction saved to database")
+    else:
+        print(f"(Database not configured; prediction not saved)")
 
 
 if __name__ == "__main__":
