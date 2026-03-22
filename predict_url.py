@@ -23,11 +23,18 @@ def main() -> None:
 
     try:
         with open(args.model_path, "rb") as model_file:
-            model = pickle.load(model_file)
+            loaded_object = pickle.load(model_file)
     except FileNotFoundError:
         print(f"Model file not found: {args.model_path}")
         print("Run train_model.py first to generate phishing_model.pkl")
         sys.exit(1)
+
+    threshold = 0.5
+    if isinstance(loaded_object, dict) and "model" in loaded_object:
+        model = loaded_object["model"]
+        threshold = float(loaded_object.get("threshold", 0.5))
+    else:
+        model = loaded_object
 
     url = args.url if args.url is not None else input("Enter URL: ").strip()
     if not url:
@@ -35,12 +42,21 @@ def main() -> None:
         sys.exit(1)
 
     features = np.asarray([extract_features(url)], dtype=np.float32)
-    prediction = int(model.predict(features)[0])
+
+    if hasattr(model, "predict_proba"):
+        score = float(model.predict_proba(features)[0, 1])
+    elif hasattr(model, "decision_function"):
+        score = float(model.decision_function(features)[0])
+    else:
+        prediction = int(model.predict(features)[0])
+        score = float(prediction)
+
+    prediction = int(score >= threshold)
 
     if prediction == 1:
-        print("⚠️ Phishing")
+        print(f"⚠️ Phishing (score={score:.4f}, threshold={threshold:.4f})")
     else:
-        print("✅ Legitimate")
+        print(f"✅ Legitimate (score={score:.4f}, threshold={threshold:.4f})")
 
 
 if __name__ == "__main__":

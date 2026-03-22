@@ -1,0 +1,49 @@
+Building features from dataset: dataset/phishing_site_urls.csv
+Rows target: 5000
+Extracting features:   0%|          | 0/5000 [00:00<?, ?url/s]Extracting features: 100%|█████████▉| 4997/5000 [00:00<00:00, 33465.76url/s]Extracting features: 100%|█████████▉| 4997/5000 [00:00<00:00, 25928.02url/s]
+Saved feature cache to: features.csv
+Removed duplicate URLs during build: 0
+Feature matrix shape: (4997, 24), labels shape: (4997,), unique domains: 3008
+Split sizes -> train: 2997, val: 1000, test: 1000 | train positive ratio: 0.5005
+
+Training and evaluating models...
+[17:43:52] Starting Logistic Regression training...
+Logistic Regression  acc=0.8500 prec=0.8616 rec=0.8340 f1=0.8476 thr=0.3783 time=0.03s
+  tuned params: {'model__C': 2.0}
+[17:43:52] Starting Decision Tree training...
+Decision Tree        acc=0.8860 prec=0.9406 rec=0.8240 f1=0.8785 thr=0.8179 time=0.03s
+  tuned params: {'max_depth': 10, 'min_samples_leaf': 1}
+[17:43:52] Starting Random Forest training...
+Random Forest        acc=0.9220 prec=0.9396 rec=0.9020 f1=0.9204 thr=0.5199 time=1.24s
+  tuned params: {'n_estimators': 300, 'max_depth': 30, 'min_samples_leaf': 2}
+  Random Forest feature importance (top 5):
+  - path_length: 0.1638
+  - url_length: 0.1531
+  - subdomain_count: 0.1213
+  - url_entropy: 0.1193
+  - slash_count: 0.0705
+[17:43:54] Starting Gradient Boosting training...
+Gradient Boosting    acc=0.9130 prec=0.9105 rec=0.9160 f1=0.9133 thr=0.4255 time=1.68s
+  tuned params: {'n_estimators': 200, 'learning_rate': 0.1, 'max_depth': 3}
+[17:43:55] Starting Extra Trees training...
+Extra Trees          acc=0.9180 prec=0.9372 rec=0.8960 f1=0.9162 thr=0.5440 time=0.66s
+  tuned params: {'n_estimators': 250, 'max_depth': None, 'min_samples_leaf': 1}
+[17:43:56] Starting Hist Gradient Boosting training...
+Hist Gradient Boosting acc=0.9190 prec=0.9165 rec=0.9220 f1=0.9192 thr=0.3969 time=5.01s
+  tuned params: {'max_iter': 300, 'learning_rate': 0.05, 'max_depth': 8}
+
+Best model: Random Forest (F1=0.9204, Accuracy=0.9220, Threshold=0.5199)
+
+Model Comparison Summary
+============================================================================================================
+Model                       Accuracy  Accuracy%   Precision      Recall    F1-score    Thresh    Train(s)
+------------------------------------------------------------------------------------------------------------
+Random Forest                 0.9220      92.20%      0.9396      0.9020      0.9204    0.5199        1.24
+Hist Gradient Boosting        0.9190      91.90%      0.9165      0.9220      0.9192    0.3969        5.01
+Extra Trees                   0.9180      91.80%      0.9372      0.8960      0.9162    0.5440        0.66
+Gradient Boosting             0.9130      91.30%      0.9105      0.9160      0.9133    0.4255        1.68
+Decision Tree                 0.8860      88.60%      0.9406      0.8240      0.8785    0.8179        0.03
+Logistic Regression           0.8500      85.00%      0.8616      0.8340      0.8476    0.3783        0.03
+============================================================================================================
+Saved best model to: phishing_model.pkl
+Total pipeline time: 9.09s
