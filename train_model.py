@@ -23,6 +23,7 @@ from sklearn.tree import DecisionTreeClassifier
 from tqdm import tqdm
 
 from feature_extractor import FEATURE_NAMES, extract_features_batch, extract_registered_domain
+from db import insert_training_run
 
 LABEL_MAP = {
     "legitimate": 0,
@@ -215,7 +216,11 @@ def build_or_load_features(
 ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     if os.path.exists(features_cache) and not rebuild_features:
         print(f"Loading cached features from: {features_cache}")
-        return load_features_from_cache(features_cache, chunksize=max(50_000, chunksize))
+        return load_features_from_cache(
+            features_cache,
+            chunksize=max(50_000, chunksize),
+            max_rows=max_rows,
+        )
 
     total_rows = _get_row_count(dataset_path)
     target_rows = max_rows if max_rows else total_rows
@@ -284,17 +289,62 @@ def build_or_load_features(
     return X, y, groups
 
 
-def load_features_from_cache(cache_path: str, chunksize: int = 100_000) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+def load_features_from_cache(
+    cache_path: str,
+    chunksize: int = 100_000,
+    max_rows: Optional[int] = None,
+) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     x_parts: List[np.ndarray] = []
     y_parts: List[np.ndarray] = []
     group_parts: List[np.ndarray] = []
+    loaded_rows = 0
+    selected_class_counts = {0: 0, 1: 0}
+    target_zero = (max_rows // 2) if max_rows is not None else None
+    target_one = (max_rows - (max_rows // 2)) if max_rows is not None else None
+
+    def _should_take(label: int) -> bool:
+        if max_rows is None:
+            return True
+        if label == 0:
+            return selected_class_counts[0] < target_zero or selected_class_counts[1] >= target_one
+        return selected_class_counts[1] < target_one or selected_class_counts[0] >= target_zero
+
     for chunk in pd.read_csv(cache_path, chunksize=chunksize):
-        x_parts.append(chunk[FEATURE_NAMES].to_numpy(dtype=np.float32))
-        y_parts.append(chunk["label"].to_numpy(dtype=np.int8))
-        if "group_key" in chunk.columns:
-            group_parts.append(chunk["group_key"].fillna("__unknown__").to_numpy(dtype=object))
+        if max_rows is None:
+            x_parts.append(chunk[FEATURE_NAMES].to_numpy(dtype=np.float32))
+            y_parts.append(chunk["label"].to_numpy(dtype=np.int8))
+            if "group_key" in chunk.columns:
+                group_parts.append(chunk["group_key"].fillna("__unknown__").to_numpy(dtype=object))
+            else:
+                group_parts.append(np.full(shape=len(chunk), fill_value="__unknown__", dtype=object))
+            continue
+
+        if loaded_rows >= max_rows:
+            break
+
+        labels = chunk["label"].to_numpy(dtype=np.int8)
+        keep_indices: List[int] = []
+        for idx, label in enumerate(labels):
+            if loaded_rows >= max_rows:
+                break
+            label_int = int(label)
+            if label_int not in (0, 1):
+                continue
+            if _should_take(label_int):
+                keep_indices.append(idx)
+                selected_class_counts[label_int] += 1
+                loaded_rows += 1
+
+        if not keep_indices:
+            continue
+
+        selected = chunk.iloc[keep_indices]
+        x_parts.append(selected[FEATURE_NAMES].to_numpy(dtype=np.float32))
+        y_parts.append(selected["label"].to_numpy(dtype=np.int8))
+        if "group_key" in selected.columns:
+            group_parts.append(selected["group_key"].fillna("__unknown__").to_numpy(dtype=object))
         else:
-            group_parts.append(np.full(shape=len(chunk), fill_value="__unknown__", dtype=object))
+            group_parts.append(np.full(shape=len(selected), fill_value="__unknown__", dtype=object))
 
     if not x_parts:
         raise ValueError("Feature cache is empty or unreadable.")
@@ -497,6 +547,21 @@ def main() -> None:
         seed=args.seed,
     )
     print_comparison_summary(metrics)
+
+    best_stats = metrics.get(best_name, {})
+    training_saved = insert_training_run(
+        model_name=best_name,
+        best_threshold=float(best_threshold),
+        best_f1=float(best_stats.get("f1", 0.0)),
+        best_accuracy=float(best_stats.get("accuracy", 0.0)),
+        rows_count=int(X.shape[0]),
+        feature_count=int(X.shape[1]),
+        metrics=metrics,
+    )
+    if training_saved:
+        print("Saved training run summary to database")
+    else:
+        print("(Database not configured; training run summary not saved)")
 
     model_bundle = {
         "model": best_model,
