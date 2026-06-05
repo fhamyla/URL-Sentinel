@@ -1,6 +1,33 @@
-
-# generated artifacts
+# Generated artifacts
 phishing_model.pkl
 features.csv
 *.log
 .env
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+ENV/
+.pytest_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+
+# Node / Vite (Frontend)
+node_modules/
+dist/
+dist-ssr/
+*.local
+.eslintcache
+.vite/
+
+# IDEs
+.vscode/
+.idea/
