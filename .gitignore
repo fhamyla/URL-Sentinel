@@ -1,33 +1,88 @@
-# Generated artifacts
-phishing_model.pkl
-features.csv
-*.log
-.env
+# ==========================================
+# URL Sentinel - Production-ready .gitignore
+# ==========================================
 
-# OS
+# --- OS / System Metadata ---
 .DS_Store
 Thumbs.db
+desktop.ini
 
-# Python
+# --- IDEs and Editors ---
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# --- Environment Variables & Secrets ---
+.env
+.env.local
+.env.*.local
+*.env
+
+# --- Python Code Caches & Bytecode ---
 __pycache__/
 *.py[cod]
 *$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# --- Python Virtual Environments ---
 .venv/
 venv/
 env/
 ENV/
-.pytest_cache/
-.mypy_cache/
-.ipynb_checkpoints/
 
-# Node / Vite (Frontend)
+# --- Python Packaging / Distribution ---
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# --- Machine Learning / Large Data Files ---
+*.pkl
+*.joblib
+*.h5
+*.pb
+*.onnx
+*.csv
+
+# --- SQLite Databases ---
+*.db
+*.sqlite
+*.sqlite3
+
+# --- Logs ---
+*.log
+logs/
+
+# --- Node / Frontend (Vite/React) ---
 node_modules/
 dist/
 dist-ssr/
-*.local
+build/
+.next/
+out/
+.nuxt/
+.cache/
 .eslintcache
 .vite/
-
-# IDEs
-.vscode/
-.idea/
+*.local
