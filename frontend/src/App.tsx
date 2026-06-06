@@ -437,19 +437,55 @@ export default function App() {
   const [history, setHistory] = useState<AnalysisResult[]>([]);
   const [copied, setCopied] = useState(false);
   const [guidesOpen, setGuidesOpen] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  interface ModelInfo {
+    model_name: string;
+    threshold: number;
+    metrics: Record<string, any>;
+  }
+  const [modelInfo, setModelInfo] = useState<ModelInfo | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    const saved = localStorage.getItem("phish-history-girly");
-    if (saved) {
-      try {
-        setHistory(JSON.parse(saved));
-      } catch {}
+  const fetchHistory = async () => {
+    try {
+      const res = await fetch("http://localhost:8000/api/history");
+      if (res.ok) {
+        const data = await res.json();
+        setHistory(data);
+      } else {
+        throw new Error();
+      }
+    } catch {
+      const saved = localStorage.getItem("phish-history-girly");
+      if (saved) {
+        try {
+          setHistory(JSON.parse(saved));
+        } catch {}
+      }
     }
+  };
+
+  const fetchModelInfo = async () => {
+    try {
+      const res = await fetch("http://localhost:8000/api/model-info");
+      if (res.ok) {
+        const data = await res.json();
+        setModelInfo(data);
+      }
+    } catch (err) {
+      console.error("Failed to fetch model info:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchHistory();
+    fetchModelInfo();
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("phish-history-girly", JSON.stringify(history.slice(0, 10)));
+    if (history.length > 0) {
+      localStorage.setItem("phish-history-girly", JSON.stringify(history.slice(0, 10)));
+    }
   }, [history]);
 
   const handleAnalyze = async (u = url) => {
@@ -459,11 +495,27 @@ export default function App() {
     }
     setLoading(true);
     setResult(null);
-    await new Promise((r) => setTimeout(r, 1400));
-    const analysis = mockAnalyze(u);
-    setResult(analysis);
-    setHistory((h) => [analysis, ...h.filter((x) => x.url !== analysis.url)].slice(0, 10));
-    setLoading(false);
+    setError(null);
+
+    try {
+      const res = await fetch("http://localhost:8000/api/analyze", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: u }),
+      });
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || `Server returned ${res.status}`);
+      }
+      const analysis = await res.json();
+      setResult(analysis);
+      setHistory((h) => [analysis, ...h.filter((x) => x.url !== analysis.url)].slice(0, 10));
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message || "Failed to scan. Please check if the backend is running.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const pastelBg = useMemo(() => {
@@ -601,6 +653,11 @@ export default function App() {
                 </button>
               ))}
             </div>
+            {error && (
+              <div className="mt-4 rounded-2xl border border-rose-200 bg-rose-50/80 px-4 py-2.5 text-xs text-rose-800 shadow-sm backdrop-blur inline-block">
+                ⚠️ {error}
+              </div>
+            )}
           </motion.div>
         </section>
 
@@ -679,8 +736,15 @@ export default function App() {
                     </p>
 
                     <div className="mt-6 flex flex-wrap gap-2">
-                      {["Soft scan", "Heuristic + ML", "Privacy first"].map((tag) => (
-                        <span key={tag} className="inline-flex items-center gap-1 rounded-full bg-rose-100 px-3 py-1 text-xs text-rose-900 ring-1 ring-rose-200">
+                      {[
+                        "Soft scan",
+                        modelInfo ? `Model: ${modelInfo.model_name}` : "Heuristic + ML",
+                        modelInfo && modelInfo.metrics[modelInfo.model_name]
+                          ? `F1: ${(modelInfo.metrics[modelInfo.model_name].f1 * 100).toFixed(1)}%`
+                          : null,
+                        "Privacy first"
+                      ].filter(Boolean).map((tag) => (
+                        <span key={tag as string} className="inline-flex items-center gap-1 rounded-full bg-rose-100 px-3 py-1 text-xs text-rose-900 ring-1 ring-rose-200">
                           <Feather className="size-3" />
                           {tag}
                         </span>
