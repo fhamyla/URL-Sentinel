@@ -122,29 +122,45 @@ def extract_features(url: object) -> List[float]:
     """Extract numeric phishing features from a single URL."""
     normalized = _normalize_url(url)
     lowered = normalized.lower()
-    parsed = _safe_urlsplit(normalized)
 
-    subdomain_count, domain_length, tld_length, is_shortener, has_suspicious_tld = _domain_features(normalized)
+    # Preserve uses_https feature based on raw input URL before cleaning
+    uses_https = float(lowered.startswith("https://"))
 
-    url_len = max(len(normalized), 1)
-    digit_count = sum(char.isdigit() for char in normalized)
+    # Normalize protocol prefixes to match training distribution
+    clean_url = normalized
+    if lowered.startswith("https://"):
+        clean_url = normalized[8:]
+    elif lowered.startswith("http://"):
+        clean_url = normalized[7:]
+    elif lowered.startswith("https:/"):  # Handle potential typos
+        clean_url = normalized[7:]
+    elif lowered.startswith("http:/"):
+        clean_url = normalized[6:]
+
+    lowered_clean = clean_url.lower()
+    parsed = _safe_urlsplit(clean_url)
+
+    subdomain_count, domain_length, tld_length, is_shortener, has_suspicious_tld = _domain_features(clean_url)
+
+    url_len = max(len(clean_url), 1)
+    digit_count = sum(char.isdigit() for char in clean_url)
 
     return [
-        float(len(normalized)),
-        float(normalized.count(".")),
-        float(normalized.count("/")),
-        float(normalized.count("?")),
-        float(normalized.count("=")),
-        float(normalized.count("&")),
-        float(normalized.count("%")),
-        float(normalized.count("_")),
-        float("@" in normalized),
-        float("-" in normalized),
-        float(lowered.startswith("https://")),
+        float(len(clean_url)),
+        float(clean_url.count(".")),
+        float(clean_url.count("/")),
+        float(clean_url.count("?")),
+        float(clean_url.count("=")),
+        float(clean_url.count("&")),
+        float(clean_url.count("%")),
+        float(clean_url.count("_")),
+        float("@" in clean_url),
+        float("-" in clean_url),
+        uses_https,
         float(digit_count),
         float(digit_count / url_len),
-        float(bool(IPV4_PATTERN.search(normalized))),
-        float(sum(keyword in lowered for keyword in SUSPICIOUS_KEYWORDS)),
+        float(bool(IPV4_PATTERN.search(clean_url))),
+        float(sum(keyword in lowered_clean for keyword in SUSPICIOUS_KEYWORDS)),
         float(subdomain_count),
         float(domain_length),
         float(tld_length),
@@ -153,7 +169,7 @@ def extract_features(url: object) -> List[float]:
         float(len(parsed.fragment)),
         float(is_shortener),
         float(has_suspicious_tld),
-        float(_url_entropy(lowered)),
+        float(_url_entropy(lowered_clean)),
     ]
 
 

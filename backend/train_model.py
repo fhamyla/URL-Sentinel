@@ -80,10 +80,30 @@ def _iter_dataset_chunks(
     max_rows: Optional[int],
 ) -> Iterator[Tuple[List[str], List[int]]]:
     """Yield chunked (urls, labels) while safely handling commas inside URLs."""
+    import csv
     with open(dataset_path, "r", encoding="utf-8", errors="ignore") as infile:
-        header = infile.readline().strip().lower().replace(" ", "")
-        if "url" not in header or "label" not in header:
+        reader = csv.reader(infile)
+        try:
+            header = next(reader)
+        except StopIteration:
+            raise ValueError("Dataset is empty.")
+
+        header_str = "".join(header).lower().replace(" ", "")
+        if "url" not in header_str or "label" not in header_str:
             raise ValueError("Dataset must contain URL and Label columns in the header.")
+
+        # Find column indices
+        url_idx = -1
+        label_idx = -1
+        for i, h in enumerate(header):
+            h_clean = h.strip().lower().replace(" ", "")
+            if "url" in h_clean:
+                url_idx = i
+            elif "label" in h_clean:
+                label_idx = i
+
+        if url_idx == -1 or label_idx == -1:
+            raise ValueError("Could not find URL and Label columns.")
 
         urls: List[str] = []
         labels: List[int] = []
@@ -92,15 +112,15 @@ def _iter_dataset_chunks(
         target_zero = (max_rows // 2) if max_rows is not None else None
         target_one = (max_rows - (max_rows // 2)) if max_rows is not None else None
 
-        for line in infile:
+        for row in reader:
+            if not row or len(row) <= max(url_idx, label_idx):
+                continue
+
             if max_rows is not None and selected_rows >= max_rows:
                 break
 
-            clean_line = line.strip()
-            if not clean_line or "," not in clean_line:
-                continue
-
-            url_part, label_part = clean_line.rsplit(",", 1)
+            url_part = row[url_idx]
+            label_part = row[label_idx]
             label = _normalize_label(label_part)
             if label is None:
                 continue
@@ -257,6 +277,16 @@ def build_or_load_features(
                 cleaned_labels.append(label)
                 domain_key = extract_registered_domain(url) or "__unknown__"
                 group_keys.append(domain_key)
+
+                # Data augmentation: Add the bare domain as a legitimate sample for good URLs
+                if label == 0 and domain_key != "__unknown__":
+                    bare_domain = domain_key
+                    bare_dedupe_key = bare_domain.lower()
+                    if bare_dedupe_key not in seen_urls:
+                        seen_urls.add(bare_dedupe_key)
+                        cleaned_urls.append(bare_domain)
+                        cleaned_labels.append(0)
+                        group_keys.append(bare_domain)
 
             if not cleaned_urls:
                 continue
