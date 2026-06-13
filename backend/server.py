@@ -1,3 +1,7 @@
+# Copyright (c) 2026 fhamyla
+# This file is part of URL Sentinel and is licensed under the MIT License.
+# See the LICENSE file in the project root for license information.
+
 """API Server for URL Sentinel phishing classifier."""
 
 from __future__ import annotations

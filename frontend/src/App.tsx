@@ -1,3 +1,7 @@
+// Copyright (c) 2026 fhamyla
+// This file is part of URL Sentinel and is licensed under the MIT License.
+// See the LICENSE file in the project root for license information.
+
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -300,7 +304,7 @@ function GuidesModal({ open, onClose }: { open: boolean; onClose: () => void }) 
                   {/* Footer */}
                   <div className="rounded-2xl bg-gradient-to-r from-rose-100 to-fuchsia-100 p-5 text-center border border-rose-200">
                     <p className="text-sm text-rose-900">
-                      Stay curious, stay safe. URL Sentinel is your companion, not a replacement for critical thinking. 💖
+                      Stay curious, stay safe. URL Sentinel is your companion, not a replacement for critical thinking.
                     </p>
                   </div>
                 </div>
