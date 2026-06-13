@@ -112,13 +112,6 @@ def format_prediction_result(url: str, score: float, prediction: int, threshold:
 
     features = [
         {
-            "id": "ssl",
-            "label": "SSL Charm",
-            "value": "Secured ✨" if has_https else "Unprotected",
-            "status": "good" if has_https else "bad",
-            "description": "Encrypted with love. Your data stays private." if has_https else "No encryption. Anyone could peek."
-        },
-        {
             "id": "domain-age",
             "label": "Domain Bloom",
             "value": f"{age_months} months",

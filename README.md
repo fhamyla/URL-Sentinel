@@ -2,7 +2,7 @@
 
 URL Sentinel is a lightweight, machine-learning-powered web application designed to analyze URLs for phishing signals using a soft, modern, and aesthetic interface. 
 
-It reads a URL's "aura" using 40+ structural signals, domain age, keyword risks, and SSL presence, feeding them into a trained **Random Forest** classifier (achieving **92.2% Accuracy** and **92.0% F1-score**) to deliver a detailed risk assessment.
+It reads a URL's "aura" using 40+ structural signals, domain age, and keyword risks, feeding them into a trained **Random Forest** classifier (achieving **92.2% Accuracy** and **92.0% F1-score**) to deliver a detailed risk assessment.
 
 ---
 
@@ -10,7 +10,6 @@ It reads a URL's "aura" using 40+ structural signals, domain age, keyword risks,
 
 *   **Aura Analysis**: Instant security verdicts ("Safe & Sweet", "Hmm... Suspicious", "Phishing Alert") mapped to beautiful, soft gradient auras.
 *   **Signal Garden**: A modern inspection panel breakdown covering:
-    *   *SSL Charm* (HTTPS encryption)
     *   *Domain Bloom* (Registration age)
     *   *Whisper Words* (Urgent keywords like *verify*, *secure*, *paypal*)
     *   *TLD Petal* (Detection of commonly abused top-level domains)
@@ -143,7 +142,7 @@ All endpoints are hosted on **`http://localhost:8000`**.
       "aura": "Rose warning • Likely deceptive",
       "summary": "Dangerous energy detected. This URL shows strong phishing traits — it may be trying to steal your information.",
       "features": [
-        { "id": "ssl", "label": "SSL Charm", "value": "Unprotected", "status": "bad" },
+        { "id": "domain-age", "label": "Domain Bloom", "value": "12 months", "status": "good" },
         ...
       ]
     }

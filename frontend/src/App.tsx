@@ -113,7 +113,7 @@ function RiskRing({ score }: { score: number }) {
     score < 30 ? "#f472b6" : score < 65 ? "#fb923c" : "#f43f5e";
 
   return (
-    <div className="relative size-[150px]">
+    <div className="relative w-[120px] h-[120px] sm:w-[150px] sm:h-[150px]">
       <svg
         viewBox={`0 0 ${radius * 2} ${radius * 2}`}
         className="w-full h-full -rotate-90"
@@ -156,7 +156,7 @@ function RiskRing({ score }: { score: number }) {
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <div className="font-display text-5xl leading-none text-rose-950">{score}</div>
+        <div className="font-display text-4xl sm:text-5xl leading-none text-rose-950">{score}</div>
         <div className="mt-1 text-[10px] uppercase tracking-[0.18em] text-rose-900/70">
           Risk Score
         </div>
@@ -186,7 +186,7 @@ function GuidesModal({ open, onClose }: { open: boolean; onClose: () => void }) 
               className="relative max-h-[85vh] w-full max-w-3xl overflow-hidden rounded-[32px] border border-rose-200 bg-white/95 shadow-2xl shadow-rose-300/50 backdrop-blur-2xl"
             >
               <div className="relative max-h-[85vh] overflow-y-auto">
-                <div className="sticky top-0 z-10 flex items-center justify-between border-b border-rose-100 bg-gradient-to-r from-pink-50 to-violet-50 px-8 py-6 backdrop-blur-xl">
+                <div className="sticky top-0 z-10 flex items-center justify-between border-b border-rose-100 bg-gradient-to-r from-pink-50 to-violet-50 px-5 sm:px-8 py-5 sm:py-6 backdrop-blur-xl">
                   <div className="flex items-center gap-3">
                     <div className="flex size-10 items-center justify-center rounded-2xl bg-gradient-to-br from-rose-400 to-fuchsia-500 shadow-md">
                       <BookOpen className="size-5 text-white" />
@@ -204,7 +204,7 @@ function GuidesModal({ open, onClose }: { open: boolean; onClose: () => void }) 
                   </button>
                 </div>
 
-                <div className="px-8 py-8 space-y-8">
+                <div className="px-5 sm:px-8 py-6 sm:py-8 space-y-8">
                   {/* Quick start */}
                   <div>
                     <div className="flex items-center gap-2 mb-4">
@@ -214,7 +214,7 @@ function GuidesModal({ open, onClose }: { open: boolean; onClose: () => void }) 
                     <div className="space-y-3">
                       {[
                         { step: "1", title: "Paste your link", desc: "Copy any suspicious URL and paste it into the input field. We support http, https, and even bare domains." },
-                        { step: "2", title: "Tap Analyze", desc: "Our gentle scanner checks 40+ signals including SSL, domain age, keywords, and patterns." },
+                        { step: "2", title: "Tap Analyze", desc: "Our gentle scanner checks 40+ signals including domain age, keywords, and patterns." },
                         { step: "3", title: "Read your aura", desc: "Get an instant verdict with risk score, confidence, and a pretty breakdown of what we found." },
                       ].map((item) => (
                         <div key={item.step} className="flex gap-4 rounded-2xl border border-rose-100 bg-gradient-to-r from-white to-rose-50/50 p-4">
@@ -260,7 +260,6 @@ function GuidesModal({ open, onClose }: { open: boolean; onClose: () => void }) 
                     <div className="rounded-2xl border border-rose-100 bg-gradient-to-br from-pink-50/50 to-violet-50/50 p-5">
                       <div className="grid gap-4 sm:grid-cols-2">
                         {[
-                          { name: "SSL Charm", desc: "Checks for HTTPS encryption. No lock = no love." },
                           { name: "Domain Bloom", desc: "New domains are riskier. We check registration age." },
                           { name: "Whisper Words", desc: "Phishing loves urgent words like 'verify' or 'secure'." },
                           { name: "TLD Petal", desc: "Some domain endings (.tk, .xyz) are abused more." },
@@ -437,7 +436,7 @@ export default function App() {
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-rose-300/60 to-transparent" />
       </div>
 
-      <div className="mx-auto max-w-[1100px] px-6 py-8 lg:px-8 lg:py-12">
+      <div className="mx-auto max-w-[1100px] px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
         {/* Header */}
         <header className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -487,7 +486,7 @@ export default function App() {
               intuition
             </h1>
             <p className="mx-auto mt-4 max-w-xl text-[15px] leading-relaxed text-rose-900/70">
-              Paste any URL. We read its aura — SSL charms, domain bloom, whisper words — and give you a pretty, honest verdict.
+              We read its aura — domain bloom, whisper words — and give you a pretty, honest verdict.
             </p>
           </motion.div>
 
@@ -515,7 +514,7 @@ export default function App() {
                 <button
                   onClick={() => handleAnalyze()}
                   disabled={loading}
-                  className="inline-flex h-12 items-center gap-2 rounded-[16px] bg-gradient-to-r from-rose-500 to-fuchsia-500 px-5 text-sm font-medium text-white shadow-md shadow-rose-300/50 transition hover:from-rose-600 hover:to-fuchsia-600 active:scale-[0.98] disabled:opacity-60"
+                  className="inline-flex h-12 items-center gap-2 rounded-[16px] bg-gradient-to-r from-rose-500 to-fuchsia-500 px-5 text-sm font-medium text-white shadow-md shadow-rose-300/50 transition hover:from-rose-600 hover:to-fuchsia-600 active:scale-[0.98] disabled:opacity-60 shrink-0"
                 >
                   {loading ? (
                     <>
@@ -584,7 +583,7 @@ export default function App() {
               {/* Top card */}
               <div className="relative overflow-hidden rounded-[32px] border border-rose-200 bg-white/80 p-[1px] shadow-2xl shadow-rose-200/60 backdrop-blur-xl">
                 <div className="absolute inset-0 bg-gradient-to-br from-pink-100/60 via-transparent to-violet-100/60" />
-                <div className="relative grid gap-10 p-8 lg:grid-cols-[auto_1fr] lg:p-12">
+                <div className="relative grid gap-10 p-5 sm:p-8 lg:grid-cols-[auto_1fr] lg:p-12">
                   <div className="flex flex-col items-center gap-4">
                     <RiskRing score={result.riskScore} />
                     <VerdictPill verdict={result.verdict} />
@@ -599,12 +598,12 @@ export default function App() {
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-start justify-between gap-4">
                       <div className="min-w-0">
-                        <div className="font-display text-[28px] leading-tight text-rose-950">
+                        <div className="font-display text-[28px] leading-tight text-rose-950 break-words">
                           {result.domain}
                         </div>
                         <div className="mt-1 truncate text-sm text-rose-800/70">{result.url}</div>
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 shrink-0">
                         <button
                           onClick={() => {
                             navigator.clipboard.writeText(result.url);
@@ -651,45 +650,51 @@ export default function App() {
               </div>
 
               {/* Features */}
-              <div className="mt-6 grid gap-5 lg:grid-cols-3">
-                <div className="lg:col-span-2 rounded-[32px] border border-rose-200 bg-white/80 p-7 shadow-xl shadow-rose-200/50 backdrop-blur">
+              <div className="mt-6 grid gap-5 grid-cols-1 lg:grid-cols-3">
+                <div className="lg:col-span-2 rounded-[28px] sm:rounded-[32px] border border-rose-200 bg-white/80 p-4 sm:p-5 md:p-7 shadow-xl shadow-rose-200/50 backdrop-blur">
                   <div className="flex items-center justify-between">
                     <h3 className="font-display text-2xl text-rose-950">Signal garden</h3>
-                    <span className="text-xs text-rose-700/70">6 charms inspected</span>
+                    <span className="text-xs text-rose-700/70">5 charms inspected</span>
                   </div>
-                  <div className="mt-6 grid gap-4 sm:grid-cols-2">
-                    {result.features.map((f) => (
-                      <div
-                        key={f.id}
-                        className="group relative overflow-hidden rounded-[20px] border border-rose-200 bg-gradient-to-b from-white to-rose-50/60 p-4 transition hover:shadow-lg hover:shadow-rose-200/60"
-                      >
-                        <div className="absolute right-0 top-0 h-20 w-20 translate-x-6 -translate-y-6 rounded-full bg-gradient-to-br from-pink-200/40 to-violet-200/40 blur-2xl" />
-                        <div className="flex items-start justify-between gap-3">
-                          <div>
-                            <div className="text-[11px] uppercase tracking-widest text-rose-700/60">{f.label}</div>
-                            <div className="mt-1 font-medium text-rose-950">{f.value}</div>
+                  <div className="signal-garden-grid mt-4 sm:mt-6 grid gap-3 sm:gap-4 md:grid-cols-2">
+                    {result.features.map((f, idx) => {
+                      const isLastOdd = idx === result.features.length - 1 && result.features.length % 2 !== 0;
+                      return (
+                        <div
+                          key={f.id}
+                          className={cn(
+                            "group relative overflow-hidden rounded-[20px] border border-rose-200 bg-gradient-to-b from-white to-rose-50/60 p-4 transition hover:shadow-lg hover:shadow-rose-200/60",
+                            isLastOdd && "md:col-span-2"
+                          )}
+                        >
+                          <div className="absolute right-0 top-0 h-20 w-20 translate-x-6 -translate-y-6 rounded-full bg-gradient-to-br from-pink-200/40 to-violet-200/40 blur-2xl" />
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="min-w-0">
+                              <div className="text-[11px] uppercase tracking-widest text-rose-700/60">{f.label}</div>
+                              <div className="mt-1 font-medium text-rose-950 break-words">{f.value}</div>
+                            </div>
+                            <span
+                              className={cn(
+                                "inline-flex size-8 shrink-0 items-center justify-center rounded-full ring-1",
+                                f.status === "good" && "bg-emerald-100 text-emerald-700 ring-emerald-200",
+                                f.status === "warn" && "bg-amber-100 text-amber-700 ring-amber-200",
+                                f.status === "bad" && "bg-rose-100 text-rose-700 ring-rose-200",
+                                f.status === "neutral" && "bg-violet-100 text-violet-700 ring-violet-200"
+                              )}
+                            >
+                              {f.status === "good" ? <Lock className="size-4" /> : f.status === "bad" ? <Unlock className="size-4" /> : <Info className="size-4" />}
+                            </span>
                           </div>
-                          <span
-                            className={cn(
-                              "inline-flex size-8 items-center justify-center rounded-full ring-1",
-                              f.status === "good" && "bg-emerald-100 text-emerald-700 ring-emerald-200",
-                              f.status === "warn" && "bg-amber-100 text-amber-700 ring-amber-200",
-                              f.status === "bad" && "bg-rose-100 text-rose-700 ring-rose-200",
-                              f.status === "neutral" && "bg-violet-100 text-violet-700 ring-violet-200"
-                            )}
-                          >
-                            {f.status === "good" ? <Lock className="size-4" /> : f.status === "bad" ? <Unlock className="size-4" /> : <Info className="size-4" />}
-                          </span>
+                          <p className="mt-2 text-sm leading-relaxed text-rose-900/70">{f.description}</p>
                         </div>
-                        <p className="mt-2 text-sm leading-relaxed text-rose-900/70">{f.description}</p>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
 
                 {/* Side */}
-                <div className="space-y-5">
-                  <div className="rounded-[32px] border border-rose-200 bg-white/80 p-6 shadow-xl shadow-rose-200/50 backdrop-blur">
+                <div className="space-y-4 sm:space-y-5">
+                  <div className="rounded-[28px] sm:rounded-[32px] border border-rose-200 bg-white/80 p-4 sm:p-5 md:p-6 shadow-xl shadow-rose-200/50 backdrop-blur">
                     <h3 className="font-display text-xl text-rose-950 flex items-center gap-2">
                       <Heart className="size-4 text-pink-500" />
                       Recent scans
@@ -699,13 +704,13 @@ export default function App() {
                         <button
                           key={h.scannedAt + h.url}
                           onClick={() => setResult(h)}
-                          className="group flex w-full items-center justify-between rounded-2xl border border-rose-100 bg-gradient-to-r from-white to-rose-50/70 px-3.5 py-3 text-left transition hover:border-rose-200 hover:shadow-md"
+                          className="history-item group flex w-full items-center justify-between rounded-2xl border border-rose-100 bg-gradient-to-r from-white to-rose-50/70 px-3 sm:px-3.5 py-2.5 sm:py-3 text-left transition hover:border-rose-200 hover:shadow-md"
                         >
-                          <div className="min-w-0">
+                          <div className="min-w-0 flex-1">
                             <div className="truncate text-sm font-medium text-rose-950">{h.domain}</div>
                             <div className="text-xs text-rose-700/60">{new Date(h.scannedAt).toLocaleTimeString()}</div>
                           </div>
-                          <div className="flex items-center gap-2">
+                          <div className="history-meta flex items-center gap-2 shrink-0">
                             <VerdictPill verdict={h.verdict} />
                             <ChevronRight className="size-4 text-rose-300 group-hover:text-rose-500" />
                           </div>
@@ -717,7 +722,7 @@ export default function App() {
                     </div>
                   </div>
 
-                  <div className="rounded-[32px] border border-rose-200 bg-gradient-to-br from-pink-50 to-violet-50 p-6 shadow-xl shadow-rose-200/50">
+                  <div className="rounded-[28px] sm:rounded-[32px] border border-rose-200 bg-gradient-to-br from-pink-50 to-violet-50 p-4 sm:p-5 md:p-6 shadow-xl shadow-rose-200/50">
                     <div className="font-display text-xl text-rose-950 flex items-center gap-2">
                       <Sparkles className="size-4 text-pink-500" />
                       Stay safe, stay soft
