@@ -6,9 +6,14 @@ import json
 import os
 import sys
 import pickle
+import re
 from datetime import datetime
 from urllib.parse import urlparse, SplitResult
 from http.server import BaseHTTPRequestHandler, HTTPServer
+
+URL_PATTERN = re.compile(
+    r"^(https?://)?((\d{1,3}\.){3}\d{1,3}|([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,})(:\d+)?([/?].*)?$"
+)
 
 # Ensure we can load scikit-learn from virtual environment
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".venv/lib/python3.14/site-packages"))
@@ -248,6 +253,10 @@ class SentinelAPIHandler(BaseHTTPRequestHandler):
                     self._send_response(400, {"error": "URL parameter is required"})
                     return
 
+                if not URL_PATTERN.match(url):
+                    self._send_response(400, {"error": "Please enter a valid URL."})
+                    return
+
                 # ML feature extraction and inference
                 features_list = extract_features(url)
                 features_arr = np.asarray([features_list], dtype=np.float32)
@@ -280,12 +289,16 @@ class SentinelAPIHandler(BaseHTTPRequestHandler):
             self._send_response(404, {"error": "Endpoint not found"})
 
 
+class SentinelHTTPServer(HTTPServer):
+    allow_reuse_address = True
+
+
 def run(port: int = 8000) -> None:
     # Set up tables first
     db.create_tables()
 
     server_address = ("127.0.0.1", port)
-    httpd = HTTPServer(server_address, SentinelAPIHandler)
+    httpd = SentinelHTTPServer(server_address, SentinelAPIHandler)
     print(f"URL Sentinel API Server running on port {port}...")
     try:
         httpd.serve_forever()

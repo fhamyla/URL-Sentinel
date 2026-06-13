@@ -50,19 +50,6 @@ interface AnalysisResult {
   aura: string;
 }
 
-const SUSPICIOUS_KEYWORDS = [
-  "login",
-  "verify",
-  "account",
-  "secure",
-  "update",
-  "banking",
-  "confirm",
-  "password",
-  "paypal",
-  "apple",
-  "microsoft",
-];
 
 const SAMPLE_URLS = [
   "https://notion.so/login",
@@ -80,113 +67,7 @@ function getDomain(url: string) {
   }
 }
 
-function mockAnalyze(inputUrl: string): AnalysisResult {
-  const url = inputUrl.trim();
-  const domain = getDomain(url);
-  const hasHttps = /^https:\/\//i.test(url);
-  const urlLength = url.length;
-  const hasAt = url.includes("@");
-  const hasIp = /\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/.test(url);
-  const subdomainCount = domain.split(".").length - 2;
-  const keywordHits = SUSPICIOUS_KEYWORDS.filter((k) =>
-    url.toLowerCase().includes(k)
-  );
-  const hasHyphen = domain.includes("-");
-  const tld = domain.split(".").pop() || "";
-  const suspiciousTld = ["tk", "ml", "ga", "cf", "gq", "xyz", "top"].includes(tld);
 
-  let risk = 0;
-  if (!hasHttps) risk += 18;
-  if (urlLength > 75) risk += 12;
-  if (hasAt) risk += 20;
-  if (hasIp) risk += 25;
-  if (subdomainCount > 2) risk += 10;
-  if (keywordHits.length > 0) risk += keywordHits.length * 8;
-  if (hasHyphen) risk += 7;
-  if (suspiciousTld) risk += 15;
-
-  const seed = url.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
-  risk += (seed % 11) - 5;
-  risk = Math.max(0, Math.min(100, Math.round(risk)));
-
-  const verdict: Verdict =
-    risk < 30 ? "safe" : risk < 65 ? "suspicious" : "phishing";
-
-  const confidence = 72 + (seed % 23);
-
-  const features: Feature[] = [
-    {
-      id: "ssl",
-      label: "SSL Charm",
-      value: hasHttps ? "Secured ✨" : "Unprotected",
-      status: hasHttps ? "good" : "bad",
-      description: hasHttps
-        ? "Encrypted with love. Your data stays private."
-        : "No encryption. Anyone could peek.",
-    },
-    {
-      id: "domain-age",
-      label: "Domain Bloom",
-      value: `${3 + (seed % 48)} months`,
-      status: seed % 3 === 0 ? "warn" : "good",
-      description: "Newer domains are like buds — untested.",
-    },
-    {
-      id: "subdomains",
-      label: "Subdomain Ribbons",
-      value: `${Math.max(0, subdomainCount)} layers`,
-      status: subdomainCount > 2 ? "warn" : "good",
-      description: "Too many layers can hide tricks.",
-    },
-    {
-      id: "length",
-      label: "URL Length",
-      value: `${urlLength} chars`,
-      status: urlLength > 75 ? "warn" : "good",
-      description: "Long URLs often hide their true face.",
-    },
-    {
-      id: "keywords",
-      label: "Whisper Words",
-      value: keywordHits.length ? keywordHits.join(", ") : "None found",
-      status: keywordHits.length ? "bad" : "good",
-      description: "Phishing loves urgent, sweet words.",
-    },
-    {
-      id: "tld",
-      label: "TLD Petal",
-      value: `.${tld.toUpperCase()}`,
-      status: suspiciousTld ? "warn" : "neutral",
-      description: "Some endings are more mischievous.",
-    },
-  ];
-
-  const aura =
-    verdict === "safe"
-      ? "Soft pink aura • Calm & trustworthy"
-      : verdict === "suspicious"
-      ? "Amber glow • Proceed with care"
-      : "Rose warning • Likely deceptive";
-
-  const summary =
-    verdict === "safe"
-      ? "This link feels gentle and safe. No major phishing signals detected — enjoy browsing with peace of mind."
-      : verdict === "suspicious"
-      ? "Hmm, mixed vibes. Some signals feel off. Avoid entering passwords or personal details until you’re sure."
-      : "Dangerous energy detected. This URL shows strong phishing traits — it may be trying to steal your information.";
-
-  return {
-    url,
-    domain,
-    verdict,
-    riskScore: risk,
-    confidence: Math.min(97, confidence),
-    features,
-    summary,
-    scannedAt: new Date().toISOString(),
-    aura,
-  };
-}
 
 function VerdictPill({ verdict }: { verdict: Verdict }) {
   const cfg = {
@@ -496,6 +377,18 @@ export default function App() {
       inputRef.current?.focus();
       return;
     }
+
+    const isValidUrl = (str: string) => {
+      const pattern = /^(https?:\/\/)?((\d{1,3}\.){3}\d{1,3}|([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,})(:\d+)?([/?].*)?$/;
+      return pattern.test(str.trim());
+    };
+
+    if (!isValidUrl(u)) {
+      setError("Please enter a valid URL.");
+      setResult(null);
+      return;
+    }
+
     setLoading(true);
     setResult(null);
     setError(null);
