@@ -233,7 +233,10 @@ function RiskRing({ score }: { score: number }) {
 
   return (
     <div className="relative size-[150px]">
-      <svg width={radius * 2} height={radius * 2} className="-rotate-90">
+      <svg
+        viewBox={`0 0 ${radius * 2} ${radius * 2}`}
+        className="w-full h-full -rotate-90"
+      >
         <defs>
           <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor={color} stopOpacity="1" />
@@ -583,7 +586,7 @@ export default function App() {
             <h1 className="font-display mt-6 text-[48px] leading-[1.05] tracking-[-0.02em] sm:text-[64px]">
               Check links with
               <span className="relative mx-3 inline-block">
-                <span className="relative z-10 bg-gradient-to-r from-rose-600 via-fuchsia-600 to-violet-600 bg-clip-text text-transparent italic">
+                <span className="relative z-10 bg-gradient-to-r from-rose-600 via-fuchsia-600 to-violet-600 bg-clip-text text-transparent italic px-2 pb-3 pt-1 -mx-2">
                   gentle
                 </span>
                 <span className="absolute inset-x-0 bottom-1 h-[10px] bg-pink-200/70 -rotate-1" />
