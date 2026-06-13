@@ -50,6 +50,34 @@ except Exception as e:
     sys.exit(1)
 
 
+def canonicalize_url(url: str) -> str:
+    """Normalize a URL to a canonical form for consistent ML scoring.
+
+    Equivalent URLs (e.g. ``google.com/``, ``https://www.google.com/``)
+    are reduced to the same string so the feature extractor always
+    produces identical feature vectors for the same effective destination.
+    """
+    canonical = url.strip()
+    lowered = canonical.lower()
+
+    # Strip protocol prefix
+    if lowered.startswith("https://"):
+        canonical = canonical[8:]
+    elif lowered.startswith("http://"):
+        canonical = canonical[7:]
+
+    # Strip leading "www."
+    if canonical.lower().startswith("www."):
+        canonical = canonical[4:]
+
+    # Ensure a trailing slash for bare domains so google.com and
+    # google.com/ produce identical feature vectors.
+    if "/" not in canonical:
+        canonical += "/"
+
+    return canonical
+
+
 def get_domain(url: str) -> str:
     """Extract standard domain name from a URL."""
     try:
@@ -254,8 +282,12 @@ class SentinelAPIHandler(BaseHTTPRequestHandler):
                     self._send_response(400, {"error": "Please enter a valid URL."})
                     return
 
-                # ML feature extraction and inference
-                features_list = extract_features(url)
+                # Canonicalize URL so equivalent forms (e.g. google.com/
+                # vs https://www.google.com/) produce identical scores
+                canonical = canonicalize_url(url)
+
+                # ML feature extraction and inference on canonical form
+                features_list = extract_features(canonical)
                 features_arr = np.asarray([features_list], dtype=np.float32)
 
                 if hasattr(model, "predict_proba"):
@@ -268,10 +300,10 @@ class SentinelAPIHandler(BaseHTTPRequestHandler):
 
                 prediction = int(score >= threshold)
 
-                # Persist result
+                # Persist result (store original URL for display)
                 db.insert_prediction(url, prediction, score, threshold, best_model_name)
 
-                # Format and return UI payload
+                # Format and return UI payload (original URL for display)
                 result = format_prediction_result(
                     url=url,
                     score=score,
