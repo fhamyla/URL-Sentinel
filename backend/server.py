@@ -11,6 +11,9 @@ import os
 import sys
 import pickle
 import re
+import time
+import threading
+from collections import defaultdict
 from datetime import datetime
 from urllib.parse import urlparse, SplitResult
 from http.server import BaseHTTPRequestHandler, HTTPServer
@@ -205,6 +208,40 @@ def format_prediction_result(url: str, score: float, prediction: int, threshold:
     }
 
 
+class RateLimiter:
+    """Thread-safe sliding window rate limiter for client IP addresses."""
+    def __init__(self, limit: int = 5, window_seconds: int = 60):
+        self.limit = limit
+        self.window_seconds = window_seconds
+        self.requests = defaultdict(list)
+        self.lock = threading.Lock()
+
+    def is_allowed(self, ip: str) -> tuple[bool, float]:
+        """Check if request from ip is allowed.
+        
+        Returns (allowed, wait_seconds).
+        """
+        now = time.time()
+        with self.lock:
+            timestamps = self.requests[ip]
+            # Keep only requests within the active sliding window
+            timestamps = [t for t in timestamps if now - t < self.window_seconds]
+            self.requests[ip] = timestamps
+            
+            if len(timestamps) < self.limit:
+                self.requests[ip].append(now)
+                return True, 0.0
+            
+            # Rate limit exceeded. Calculate wait time.
+            oldest_request = timestamps[0]
+            wait_time = self.window_seconds - (now - oldest_request)
+            return False, max(0.0, wait_time)
+
+
+# Global rate limiter: max 5 requests per minute
+analyzer_rate_limiter = RateLimiter(limit=5, window_seconds=60)
+
+
 class SentinelAPIHandler(BaseHTTPRequestHandler):
 
     def _send_response(self, status_code: int, data: dict | list) -> None:
@@ -266,6 +303,16 @@ class SentinelAPIHandler(BaseHTTPRequestHandler):
         path = parsed_path.path
 
         if path == "/api/analyze":
+            # Rate limit check first
+            client_ip = self.client_address[0]
+            allowed, wait_seconds = analyzer_rate_limiter.is_allowed(client_ip)
+            if not allowed:
+                wait_seconds_rounded = int(wait_seconds) + 1  # Round up to be user friendly
+                self._send_response(429, {
+                    "error": f"Rate limit exceeded. Please try again in {wait_seconds_rounded} seconds."
+                })
+                return
+
             content_length = int(self.headers.get("Content-Length", 0))
             if content_length == 0:
                 self._send_response(400, {"error": "Empty request body"})
