@@ -5,13 +5,318 @@
   --breakpoint-lg: 1025px;
 }
 
+/* ══════════════════════════════════════════════════════
+   Light Theme (default) — rose / pink aesthetic
+   ══════════════════════════════════════════════════════ */
 :root {
   --font-display: "Playfair Display", "Cormorant Garamond", serif;
   --font-body: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+
+  /* Core surfaces */
+  --color-page: #fffafc;
+  --color-surface: rgba(255, 255, 255, 0.8);
+  --color-surface-solid: #ffffff;
+  --color-surface-alt: rgba(255, 255, 255, 0.7);
+  --color-surface-hover: rgba(255, 255, 255, 0.6);
+  --color-surface-glass: rgba(255, 255, 255, 0.95);
+
+  /* Text */
+  --color-text-primary: #4c0519;        /* rose-950 */
+  --color-text-secondary: rgba(136, 19, 55, 0.7);  /* rose-800/70 */
+  --color-text-tertiary: rgba(190, 18, 60, 0.7);   /* rose-700/70 */
+  --color-text-muted: rgba(190, 18, 60, 0.6);      /* rose-700/60 */
+  --color-text-accent: #ec4899;         /* pink-500 */
+
+  /* Borders */
+  --color-border: rgba(225, 29, 72, 0.2);    /* rose-200 */
+  --color-border-light: rgba(255, 228, 230, 1); /* rose-100 */
+  --color-border-hover: rgba(225, 29, 72, 0.25);
+
+  /* Shadows */
+  --shadow-color: rgba(251, 113, 133, 0.5);  /* rose-200/50 */
+  --shadow-heavy: rgba(253, 164, 175, 0.5);  /* rose-300/50 */
+  --shadow-glow: rgba(249, 168, 212, 0.4);   /* pink-300/40 */
+
+  /* Gradients */
+  --gradient-surface-start: rgba(252, 231, 243, 0.6);  /* pink-100/60 */
+  --gradient-surface-end: rgba(237, 233, 254, 0.6);    /* violet-100/60 */
+  --gradient-soft-start: rgba(252, 231, 243, 0.5);     /* pink-50/50 */
+  --gradient-soft-end: rgba(245, 243, 255, 0.5);       /* violet-50/50 */
+
+  /* Accent / Brand */
+  --color-accent-from: #f43f5e;     /* rose-500 */
+  --color-accent-to: #d946ef;       /* fuchsia-500 */
+  --color-accent-from-hover: #e11d48; /* rose-600 */
+  --color-accent-to-hover: #c026d3;   /* fuchsia-600 */
+
+  /* Tags / Pills */
+  --color-tag-bg: rgba(255, 228, 230, 1);  /* rose-100 */
+  --color-tag-text: #881337;                /* rose-900 */
+  --color-tag-ring: rgba(225, 29, 72, 0.2);
+
+  /* Feature card */
+  --color-card-from: #ffffff;
+  --color-card-to: rgba(255, 241, 242, 0.6);  /* rose-50/60 */
+  --color-card-orb-from: rgba(252, 231, 243, 0.4);
+  --color-card-orb-to: rgba(237, 233, 254, 0.4);
+
+  /* Status colors */
+  --color-status-good-bg: rgba(209, 250, 229, 1);   /* emerald-100 */
+  --color-status-good-text: #047857;                  /* emerald-700 */
+  --color-status-good-ring: rgba(167, 243, 208, 1);  /* emerald-200 */
+  --color-status-warn-bg: rgba(254, 243, 199, 1);    /* amber-100 */
+  --color-status-warn-text: #b45309;                  /* amber-700 */
+  --color-status-warn-ring: rgba(253, 230, 138, 1);  /* amber-200 */
+  --color-status-bad-bg: rgba(255, 228, 230, 1);     /* rose-100 */
+  --color-status-bad-text: #be123c;                   /* rose-700 */
+  --color-status-bad-ring: rgba(254, 205, 211, 1);   /* rose-200 */
+  --color-status-neutral-bg: rgba(237, 233, 254, 1); /* violet-100 */
+  --color-status-neutral-text: #6d28d9;               /* violet-700 */
+  --color-status-neutral-ring: rgba(221, 214, 254, 1);/* violet-200 */
+
+  /* Footer */
+  --color-footer-border: rgba(225, 29, 72, 0.2);
+
+  /* Backdrop */
+  --color-backdrop: rgba(76, 5, 25, 0.2);  /* rose-950/20 */
+
+  /* Modal */
+  --color-modal-header-from: rgba(253, 242, 248, 1);  /* pink-50 */
+  --color-modal-header-to: rgba(245, 243, 255, 1);    /* violet-50 */
+
+  /* Tip card gradient */
+  --color-tip-from: rgba(255, 228, 230, 1);  /* rose-100 */
+  --color-tip-to: rgba(245, 208, 254, 1);    /* fuchsia-100 */
+
+  /* Risk ring track */
+  --color-ring-track: rgba(255, 255, 255, 0.5);
+  --color-risk-text: #4c0519;
+  --color-risk-sub: rgba(136, 19, 55, 0.7);
+
+  /* Input */
+  --color-input-glow-from: rgba(249, 168, 212, 1);  /* pink-300 */
+  --color-input-glow-via: rgba(232, 121, 249, 1);   /* fuchsia-300 */
+  --color-input-glow-to: rgba(196, 181, 253, 1);    /* violet-300 */
+  --color-input-placeholder: rgba(253, 164, 175, 1); /* rose-300 */
+
+  /* Background gradient */
+  --color-radial-overlay: rgba(255, 255, 255, 0.8);
+  --color-top-line: rgba(253, 164, 175, 0.6); /* rose-300/60 */
+
+  /* Error */
+  --color-error-bg: rgba(255, 241, 242, 0.8);
+  --color-error-border: rgba(254, 205, 211, 1);
+  --color-error-text: #9f1239;
+
+  /* Toggle */
+  --color-toggle-bg: rgba(255, 255, 255, 0.6);
+  --color-toggle-border: rgba(225, 29, 72, 0.2);
+  --color-toggle-text: #881337;
+  --color-toggle-hover: rgba(255, 228, 230, 1);
+
+  /* Verdict pills */
+  --verdict-safe-from: rgba(167, 243, 208, 1);
+  --verdict-safe-to: rgba(153, 246, 228, 1);
+  --verdict-safe-text: #064e3b;
+  --verdict-sus-from: rgba(253, 230, 138, 1);
+  --verdict-sus-to: rgba(254, 215, 170, 1);
+  --verdict-sus-text: #78350f;
+  --verdict-phish-from: rgba(254, 205, 211, 1);
+  --verdict-phish-to: rgba(249, 168, 212, 1);
+  --verdict-phish-text: #881337;
+  --verdict-ring: rgba(255, 255, 255, 0.6);
+
+  /* Pulse / skeleton */
+  --color-skeleton: rgba(255, 255, 255, 0.6);
+  --color-skeleton-border: rgba(225, 29, 72, 0.2);
+
+  /* Guide step card */
+  --color-step-from: #ffffff;
+  --color-step-to: rgba(255, 241, 242, 0.5);
+
+  /* Sample URL buttons */
+  --color-sample-bg: rgba(255, 255, 255, 0.7);
+  --color-sample-hover: #ffffff;
+  --color-sample-border: rgba(225, 29, 72, 0.2);
+
+  /* Background image */
+  --bg-image-opacity: 0.35;
+}
+
+/* ══════════════════════════════════════════════════════
+   Dark Sepia Theme — warm brown-black, muted beige
+   ══════════════════════════════════════════════════════ */
+[data-theme="dark-sepia"] {
+  /* Core surfaces */
+  --color-page: #1a1410;
+  --color-surface: rgba(42, 34, 26, 0.85);
+  --color-surface-solid: #2a221a;
+  --color-surface-alt: rgba(48, 38, 28, 0.8);
+  --color-surface-hover: rgba(55, 44, 32, 0.7);
+  --color-surface-glass: rgba(42, 34, 26, 0.95);
+
+  /* Text */
+  --color-text-primary: #e8dcc8;
+  --color-text-secondary: rgba(210, 190, 160, 0.85);
+  --color-text-tertiary: rgba(190, 170, 140, 0.8);
+  --color-text-muted: rgba(170, 150, 120, 0.7);
+  --color-text-accent: #c49a6c;
+
+  /* Borders */
+  --color-border: rgba(160, 130, 90, 0.3);
+  --color-border-light: rgba(140, 110, 70, 0.2);
+  --color-border-hover: rgba(180, 150, 100, 0.4);
+
+  /* Shadows */
+  --shadow-color: rgba(20, 15, 10, 0.4);
+  --shadow-heavy: rgba(10, 8, 5, 0.5);
+  --shadow-glow: rgba(160, 130, 80, 0.15);
+
+  /* Gradients */
+  --gradient-surface-start: rgba(60, 48, 35, 0.6);
+  --gradient-surface-end: rgba(50, 40, 30, 0.6);
+  --gradient-soft-start: rgba(55, 44, 32, 0.5);
+  --gradient-soft-end: rgba(45, 36, 26, 0.5);
+
+  /* Accent / Brand */
+  --color-accent-from: #b87333;
+  --color-accent-to: #9a6b45;
+  --color-accent-from-hover: #cc8040;
+  --color-accent-to-hover: #a87750;
+
+  /* Tags / Pills */
+  --color-tag-bg: rgba(80, 64, 44, 0.6);
+  --color-tag-text: #d4c4a8;
+  --color-tag-ring: rgba(140, 110, 70, 0.3);
+
+  /* Feature card */
+  --color-card-from: rgba(42, 34, 26, 1);
+  --color-card-to: rgba(50, 40, 30, 0.8);
+  --color-card-orb-from: rgba(80, 64, 40, 0.2);
+  --color-card-orb-to: rgba(70, 56, 35, 0.2);
+
+  /* Status colors (softer for dark theme) */
+  --color-status-good-bg: rgba(30, 60, 40, 0.5);
+  --color-status-good-text: #7cc9a0;
+  --color-status-good-ring: rgba(40, 80, 55, 0.5);
+  --color-status-warn-bg: rgba(70, 55, 25, 0.5);
+  --color-status-warn-text: #d4a94c;
+  --color-status-warn-ring: rgba(90, 70, 30, 0.5);
+  --color-status-bad-bg: rgba(70, 30, 30, 0.5);
+  --color-status-bad-text: #d88888;
+  --color-status-bad-ring: rgba(90, 40, 40, 0.5);
+  --color-status-neutral-bg: rgba(50, 42, 65, 0.5);
+  --color-status-neutral-text: #a98ed4;
+  --color-status-neutral-ring: rgba(65, 55, 85, 0.5);
+
+  /* Footer */
+  --color-footer-border: rgba(140, 110, 70, 0.25);
+
+  /* Backdrop */
+  --color-backdrop: rgba(10, 8, 5, 0.6);
+
+  /* Modal */
+  --color-modal-header-from: rgba(48, 38, 28, 1);
+  --color-modal-header-to: rgba(42, 34, 26, 1);
+
+  /* Tip card gradient */
+  --color-tip-from: rgba(60, 48, 35, 0.8);
+  --color-tip-to: rgba(55, 44, 32, 0.8);
+
+  /* Risk ring track */
+  --color-ring-track: rgba(100, 80, 55, 0.3);
+  --color-risk-text: #e8dcc8;
+  --color-risk-sub: rgba(190, 170, 140, 0.7);
+
+  /* Input */
+  --color-input-glow-from: rgba(180, 140, 80, 0.6);
+  --color-input-glow-via: rgba(160, 120, 70, 0.5);
+  --color-input-glow-to: rgba(140, 100, 60, 0.4);
+  --color-input-placeholder: rgba(150, 130, 100, 0.6);
+
+  /* Background gradient */
+  --color-radial-overlay: rgba(30, 24, 18, 0.6);
+  --color-top-line: rgba(140, 110, 70, 0.3);
+
+  /* Error */
+  --color-error-bg: rgba(70, 30, 30, 0.5);
+  --color-error-border: rgba(120, 50, 50, 0.5);
+  --color-error-text: #d88888;
+
+  /* Toggle */
+  --color-toggle-bg: rgba(55, 44, 32, 0.8);
+  --color-toggle-border: rgba(140, 110, 70, 0.3);
+  --color-toggle-text: #c49a6c;
+  --color-toggle-hover: rgba(65, 52, 38, 0.9);
+
+  /* Verdict pills */
+  --verdict-safe-from: rgba(30, 70, 50, 0.7);
+  --verdict-safe-to: rgba(25, 65, 55, 0.7);
+  --verdict-safe-text: #7cc9a0;
+  --verdict-sus-from: rgba(80, 65, 25, 0.7);
+  --verdict-sus-to: rgba(75, 55, 25, 0.7);
+  --verdict-sus-text: #d4a94c;
+  --verdict-phish-from: rgba(80, 30, 35, 0.7);
+  --verdict-phish-to: rgba(75, 25, 40, 0.7);
+  --verdict-phish-text: #d88888;
+  --verdict-ring: rgba(100, 80, 55, 0.3);
+
+  /* Pulse / skeleton */
+  --color-skeleton: rgba(55, 44, 32, 0.6);
+  --color-skeleton-border: rgba(100, 80, 55, 0.3);
+
+  /* Guide step card */
+  --color-step-from: rgba(42, 34, 26, 1);
+  --color-step-to: rgba(50, 40, 30, 0.5);
+
+  /* Sample URL buttons */
+  --color-sample-bg: rgba(55, 44, 32, 0.7);
+  --color-sample-hover: rgba(65, 52, 38, 1);
+  --color-sample-border: rgba(140, 110, 70, 0.3);
+
+  /* Background image */
+  --bg-image-opacity: 0.08;
+}
+
+/* ══════════════════════════════════════════════════════
+   Global smooth transition for theme switching
+   ══════════════════════════════════════════════════════ */
+html,
+html *,
+html *::before,
+html *::after {
+  transition-property: background-color, border-color, color, box-shadow, opacity;
+  transition-duration: 0.4s;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Exclude animations & transforms from the blanket transition */
+html *[class*="animate-"],
+html *[class*="motion-"],
+svg circle,
+svg path {
+  transition-property: background-color, border-color, color, box-shadow;
 }
 
 html {
   font-family: var(--font-body);
+}
+
+/* Theme-aware placeholder */
+input::placeholder {
+  color: var(--color-input-placeholder);
+}
+
+/* Scrollbar theming for dark sepia */
+[data-theme="dark-sepia"] ::-webkit-scrollbar {
+  width: 8px;
+}
+[data-theme="dark-sepia"] ::-webkit-scrollbar-track {
+  background: var(--color-page);
+}
+[data-theme="dark-sepia"] ::-webkit-scrollbar-thumb {
+  background-color: rgba(140, 110, 70, 0.3);
+  border-radius: 4px;
 }
 
 .font-display {
@@ -20,6 +325,68 @@ html {
 
 .font-body {
   font-family: var(--font-body);
+}
+
+/* ══════════════════════════════════════════════════════
+   Theme Toggle Button
+   ══════════════════════════════════════════════════════ */
+.theme-toggle {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 9999px;
+  background: var(--color-toggle-bg);
+  border: 1px solid var(--color-toggle-border);
+  color: var(--color-toggle-text);
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.theme-toggle:hover {
+  background: var(--color-toggle-hover);
+  box-shadow: 0 0 20px var(--shadow-glow);
+  transform: scale(1.05);
+}
+
+.theme-toggle:active {
+  transform: scale(0.95);
+}
+
+.theme-toggle .icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.3s ease;
+}
+
+.theme-toggle .icon-wrapper.entering {
+  animation: toggleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes toggleIn {
+  0% {
+    transform: rotate(-90deg) scale(0);
+    opacity: 0;
+  }
+  100% {
+    transform: rotate(0deg) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes toggleOut {
+  0% {
+    transform: rotate(0deg) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: rotate(90deg) scale(0);
+    opacity: 0;
+  }
 }
 
 /* ── Responsive: Signal Garden feature cards ── */
