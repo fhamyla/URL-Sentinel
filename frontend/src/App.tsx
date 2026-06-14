@@ -32,6 +32,8 @@ import {
 } from "lucide-react";
 import { cn } from "./utils/cn";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+
 type Verdict = "safe" | "suspicious" | "phishing";
 
 interface Feature {
@@ -335,7 +337,7 @@ export default function App() {
 
   const fetchHistory = async () => {
     try {
-      const res = await fetch("http://localhost:8000/api/history");
+      const res = await fetch(`${API_URL}/api/history`);
       if (res.ok) {
         const data = await res.json();
         setHistory(data);
@@ -354,7 +356,7 @@ export default function App() {
 
   const fetchModelInfo = async () => {
     try {
-      const res = await fetch("http://localhost:8000/api/model-info");
+      const res = await fetch(`${API_URL}/api/model-info`);
       if (res.ok) {
         const data = await res.json();
         setModelInfo(data);
@@ -397,7 +399,7 @@ export default function App() {
     setError(null);
 
     try {
-      const res = await fetch("http://localhost:8000/api/analyze", {
+      const res = await fetch(`${API_URL}/api/analyze`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url: u }),

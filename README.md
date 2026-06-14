@@ -155,3 +155,33 @@ All endpoints are hosted on **`http://localhost:8000`**.
 ### 3. Fetch Loaded ML Model Metrics
 *   **Endpoint:** `GET /api/model-info`
 *   **Response:** Detailed metrics (Accuracy, F1, Precision, Recall, tuning threshold) for the active machine learning model.
+
+---
+
+## ☁️ Cloud Deployment
+
+### 1. Deploy the Backend on Render
+1. Create a new **Web Service** on [Render](https://render.com/).
+2. Connect your GitHub repository.
+3. Configure the following service settings:
+   - **Root Directory**: `backend`
+   - **Runtime**: `Python`
+   - **Build Command**: `pip install -r requirements.txt`
+   - **Start Command**: `python server.py`
+4. Add the following **Environment Variables** in the Render Dashboard:
+   - `PORT`: (Render sets this dynamically, e.g., `8000`)
+   - `FIREBASE_PROJECT_ID` (Optional): Your Firebase Firestore project ID.
+   - `FIREBASE_SERVICE_ACCOUNT_PATH` (Optional): The service account raw JSON credentials string (must start with `{`). If provided, scan history will persist to Firebase Firestore.
+5. Hit **Create Web Service**. Render will deploy the API server (e.g., `https://url-sentinel-api.onrender.com`).
+
+### 2. Deploy the Frontend on Vercel
+1. Create a new project on [Vercel](https://vercel.com/).
+2. Connect your GitHub repository.
+3. Configure the following project settings:
+   - **Root Directory**: `frontend`
+   - **Framework Preset**: `Vite` (automatically detected)
+   - **Build Command**: `npm run build`
+   - **Output Directory**: `dist`
+4. Add the following **Environment Variable**:
+   - `VITE_API_URL`: Set this to your deployed Render backend URL (e.g. `https://url-sentinel-api.onrender.com`). Do not append a trailing slash.
+5. Click **Deploy**. Vercel will host your aesthetic UI!

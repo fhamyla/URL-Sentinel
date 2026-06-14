@@ -22,8 +22,10 @@ URL_PATTERN = re.compile(
     r"^(https?://)?((\d{1,3}\.){3}\d{1,3}|([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,})(:\d+)?([/?].*)?$"
 )
 
-# Ensure we can load scikit-learn from virtual environment
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".venv/lib/python3.14/site-packages"))
+# Ensure we can load scikit-learn from virtual environment if it exists locally
+_venv_site_packages = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".venv/lib/python3.14/site-packages")
+if os.path.exists(_venv_site_packages):
+    sys.path.insert(0, _venv_site_packages)
 
 import numpy as np
 import db
@@ -373,7 +375,8 @@ def run(port: int = 8000) -> None:
     # Set up tables first
     db.create_tables()
 
-    server_address = ("127.0.0.1", port)
+    # Bind to 0.0.0.0 to accept traffic from public routes when deployed
+    server_address = ("0.0.0.0", port)
     httpd = SentinelHTTPServer(server_address, SentinelAPIHandler)
     print(f"URL Sentinel API Server running on port {port}...")
     try:
@@ -386,4 +389,10 @@ def run(port: int = 8000) -> None:
 
 
 if __name__ == "__main__":
-    run()
+    # Use dynamic port assigned by Render, defaulting to 8000 for local runs
+    port_env = os.environ.get("PORT", "8000")
+    try:
+        port = int(port_env)
+    except ValueError:
+        port = 8000
+    run(port)
