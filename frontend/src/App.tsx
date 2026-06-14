@@ -88,9 +88,13 @@ function useTheme() {
   });
 
   const setTheme = useCallback((t: Theme) => {
+    const root = document.documentElement;
+    root.classList.add("theme-transitioning");
     setThemeState(t);
     localStorage.setItem("url-sentinel-theme", t);
-    document.documentElement.setAttribute("data-theme", t === "light" ? "" : t);
+    root.setAttribute("data-theme", t === "light" ? "" : t);
+    // Remove the transitioning class after CSS transitions finish
+    setTimeout(() => root.classList.remove("theme-transitioning"), 500);
   }, []);
 
   useEffect(() => {

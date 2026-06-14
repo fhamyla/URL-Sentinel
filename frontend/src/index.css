@@ -300,6 +300,7 @@ svg path {
 
 html {
   font-family: var(--font-body);
+  overflow-y: scroll;
 }
 
 /* Theme-aware placeholder */
@@ -307,16 +308,33 @@ input::placeholder {
   color: var(--color-input-placeholder);
 }
 
-/* Scrollbar theming for dark sepia */
-[data-theme="dark-sepia"] ::-webkit-scrollbar {
+/* Scrollbar theming — styled in both themes to prevent flash on toggle */
+::-webkit-scrollbar {
   width: 8px;
 }
-[data-theme="dark-sepia"] ::-webkit-scrollbar-track {
+::-webkit-scrollbar-track {
   background: var(--color-page);
 }
+::-webkit-scrollbar-thumb {
+  background-color: rgba(225, 29, 72, 0.15);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(225, 29, 72, 0.25);
+}
+
 [data-theme="dark-sepia"] ::-webkit-scrollbar-thumb {
   background-color: rgba(140, 110, 70, 0.3);
-  border-radius: 4px;
+}
+[data-theme="dark-sepia"] ::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(140, 110, 70, 0.5);
+}
+
+/* Suppress overflow changes during theme transition */
+html.theme-transitioning,
+html.theme-transitioning * {
+  transition-property: background-color, border-color, color, box-shadow !important;
+  overflow-anchor: none;
 }
 
 .font-display {
