@@ -58,12 +58,13 @@ share/python-wheels/
 MANIFEST
 
 # --- Machine Learning / Large Data Files ---
-*.pkl
+# NOTE: *.pkl is NOT ignored — phishing_model.pkl must be committed for Render deployment
 *.joblib
 *.h5
 *.pb
 *.onnx
 *.csv
+backend/dataset/
 
 # --- SQLite Databases ---
 *.db
