@@ -753,7 +753,7 @@ export default function App() {
         <footer className="mt-24 border-t border-rose-200 pt-8 text-center">
           <div className="font-display text-lg text-rose-950">URL Sentinel • aesthetic security</div>
           <div className="mt-1 text-xs text-rose-700/70">
-            Made with ♡ • Not a substitute for professional threat intel • © 2026
+            Made with ♡ • Not a substitute for professional threat intel • © 2026 fhamyla
           </div>
         </footer>
       </div>
