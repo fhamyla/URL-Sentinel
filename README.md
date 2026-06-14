@@ -4,6 +4,11 @@ URL Sentinel is a lightweight, machine-learning-powered web application designed
 
 It reads a URL's "aura" using 40+ structural signals, domain age, and keyword risks, feeding them into a trained **Random Forest** classifier (achieving **92.2% Accuracy** and **92.0% F1-score**) to deliver a detailed risk assessment.
 
+https://url-sentinel-sepia.vercel.app/
+
+<img src="frontend/public/images/url-sentinel-light.png" alt="Dashboard" width="500"/>
+<img src="frontend/public/images/url-sentinel-dark.png" alt="Dashboard" width="500"/>
+
 ---
 
 ## ✨ System Features
