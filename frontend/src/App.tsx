@@ -936,14 +936,10 @@ export default function App() {
                     <div className="mt-6 flex flex-wrap gap-2">
                       {[
                         "Soft scan",
-                        modelInfo ? `Model: ${modelInfo.model_name}` : "Heuristic + ML",
-                        modelInfo && modelInfo.metrics[modelInfo.model_name]
-                          ? `F1: ${(modelInfo.metrics[modelInfo.model_name].f1 * 100).toFixed(1)}%`
-                          : null,
                         "Privacy first"
-                      ].filter(Boolean).map((tag) => (
+                      ].map((tag) => (
                         <span
-                          key={tag as string}
+                          key={tag}
                           className="inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs ring-1"
                           style={{
                             backgroundColor: 'var(--color-tag-bg)',
