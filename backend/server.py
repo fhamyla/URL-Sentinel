@@ -127,10 +127,6 @@ def format_prediction_result(url: str, score: float, prediction: int, threshold:
     has_https = url.lower().startswith("https://")
 
     # Features extraction
-    seed = sum(ord(c) for c in domain)
-    age_months = 3 + (seed % 48)
-    age_status = "warn" if seed % 3 == 0 else "good"
-
     subdomain_parts = [p for p in domain.split(".") if p]
     subdomain_count = max(0, len(subdomain_parts) - 2)
     sub_status = "warn" if subdomain_count > 2 else "good"
@@ -148,13 +144,6 @@ def format_prediction_result(url: str, score: float, prediction: int, threshold:
     tld_status = "warn" if suspicious_tld else "neutral"
 
     features = [
-        {
-            "id": "domain-age",
-            "label": "Domain Bloom",
-            "value": f"{age_months} months",
-            "status": age_status,
-            "description": "Newer domains are like buds — untested."
-        },
         {
             "id": "subdomains",
             "label": "Subdomain Ribbons",

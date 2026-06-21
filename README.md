@@ -15,7 +15,6 @@ https://url-sentinel-sepia.vercel.app/
 
 *   **Aura Analysis**: Instant security verdicts ("Safe & Sweet", "Hmm... Suspicious", "Phishing Alert") mapped to beautiful, soft gradient auras.
 *   **Signal Garden**: A modern inspection panel breakdown covering:
-    *   *Domain Bloom* (Registration age)
     *   *Whisper Words* (Urgent keywords like *verify*, *secure*, *paypal*)
     *   *TLD Petal* (Detection of commonly abused top-level domains)
 *   **Recent Scans**: Persistence of recent scans locally (via LocalStorage) and via API history.
@@ -147,7 +146,7 @@ All endpoints are hosted on **`http://localhost:8000`**.
       "aura": "Rose warning • Likely deceptive",
       "summary": "Dangerous energy detected. This URL shows strong phishing traits — it may be trying to steal your information.",
       "features": [
-        { "id": "domain-age", "label": "Domain Bloom", "value": "12 months", "status": "good" },
+        { "id": "subdomains", "label": "Subdomain Ribbons", "value": "0 layers", "status": "good" },
         ...
       ]
     }

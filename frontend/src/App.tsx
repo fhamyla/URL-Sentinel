@@ -399,7 +399,6 @@ function GuidesModal({ open, onClose }: { open: boolean; onClose: () => void }) 
                     >
                       <div className="grid gap-4 sm:grid-cols-2">
                         {[
-                          { name: "Domain Bloom", desc: "New domains are riskier. We check registration age." },
                           { name: "Whisper Words", desc: "Phishing loves urgent words like 'verify' or 'secure'." },
                           { name: "TLD Petal", desc: "Some domain endings (.tk, .xyz) are abused more." },
                         ].map((s) => (
@@ -680,7 +679,7 @@ export default function App() {
               intuition
             </h1>
             <p className="mx-auto mt-4 max-w-xl text-[15px] leading-relaxed" style={{ color: 'var(--color-text-tertiary)' }}>
-              We read its aura — domain bloom, whisper words — and give you a pretty, honest verdict.
+              We read its aura — whisper words, TLD petals — and give you a pretty, honest verdict.
             </p>
           </motion.div>
 
@@ -936,7 +935,7 @@ export default function App() {
                 >
                   <div className="flex items-center justify-between">
                     <h3 className="font-display text-2xl" style={{ color: 'var(--color-text-primary)' }}>Signal garden</h3>
-                    <span className="text-xs" style={{ color: 'var(--color-text-tertiary)' }}>5 charms inspected</span>
+                    <span className="text-xs" style={{ color: 'var(--color-text-tertiary)' }}>4 charms inspected</span>
                   </div>
                   <div className="signal-garden-grid mt-4 sm:mt-6 grid gap-3 sm:gap-4 md:grid-cols-2">
                     {result.features.map((f, idx) => {
