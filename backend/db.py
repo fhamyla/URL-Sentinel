@@ -61,6 +61,7 @@ def insert_prediction(
     score: float,
     threshold: float,
     model_name: str,
+    session_id: str = "",
 ) -> bool:
     """Insert a prediction (to Firestore and in-memory)."""
     global _pred_id_counter
@@ -72,6 +73,7 @@ def insert_prediction(
         "score": score,
         "threshold": threshold,
         "model_name": model_name,
+        "session_id": session_id,
         "created_at": created_at_str
     }
     # Always store to in-memory lists as fallback
@@ -87,6 +89,7 @@ def insert_prediction(
                 "score": score,
                 "threshold": threshold,
                 "model_name": model_name,
+                "session_id": session_id,
                 "created_at": created_at_str
             })
             return True
@@ -140,12 +143,25 @@ def insert_training_run(
             return True
     return True
 
-def get_recent_predictions(limit: int = 20) -> list[dict]:
-    """Fetch the latest predictions from Firestore or memory."""
+def get_recent_predictions(limit: int = 20, session_id: str = "") -> list[dict]:
+    """Fetch the latest predictions from Firestore or memory.
+
+    When *session_id* is provided, only predictions belonging to that
+    session are returned.  When empty, an empty list is returned so that
+    unauthenticated callers never see another user's scan history.
+    """
+    if not session_id:
+        return []
+
     if _firebase_initialized and db_client:
         try:
             predictions_ref = db_client.collection("predictions")
-            query = predictions_ref.order_by("created_at", direction=firestore.Query.DESCENDING).limit(limit)
+            query = (
+                predictions_ref
+                .where("session_id", "==", session_id)
+                .order_by("created_at", direction=firestore.Query.DESCENDING)
+                .limit(limit)
+            )
             docs = query.stream()
             results = []
             for doc in docs:
@@ -156,8 +172,9 @@ def get_recent_predictions(limit: int = 20) -> list[dict]:
         except Exception as e:
             print(f"Firestore get_recent_predictions failed: {e}. Falling back to in-memory.")
 
-    # Fallback to local in-memory predictions
-    return sorted(_predictions_in_memory, key=lambda x: x["id"], reverse=True)[:limit]
+    # Fallback to local in-memory predictions filtered by session_id
+    filtered = [p for p in _predictions_in_memory if p.get("session_id") == session_id]
+    return sorted(filtered, key=lambda x: x["id"], reverse=True)[:limit]
 
 def get_recent_training_runs(limit: int = 10) -> list[dict]:
     """Fetch the latest training runs from Firestore or memory."""

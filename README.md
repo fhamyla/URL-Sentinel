@@ -128,6 +128,9 @@ All endpoints are hosted on **`http://localhost:8000`**.
 
 ### 1. Analyze a URL
 *   **Endpoint:** `POST /api/analyze`
+*   **Headers:**
+    *   `Content-Type: application/json`
+    *   `X-Session-Id: <uuid>` — Anonymous session identifier. Scans are tagged with this ID so history is scoped per browser/device.
 *   **Payload:**
     ```json
     {
@@ -154,7 +157,9 @@ All endpoints are hosted on **`http://localhost:8000`**.
 
 ### 2. Fetch Recent Scans History
 *   **Endpoint:** `GET /api/history`
-*   **Response:** Array of the latest 20 analyzed URL results.
+*   **Headers:**
+    *   `X-Session-Id: <uuid>` — Required. Only scans belonging to this session are returned. If omitted, an empty array is returned.
+*   **Response:** Array of the latest 20 analyzed URL results for the given session.
 
 ### 3. Fetch Loaded ML Model Metrics
 *   **Endpoint:** `GET /api/model-info`

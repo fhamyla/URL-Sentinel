@@ -105,6 +105,37 @@ function useTheme() {
 }
 
 /* ──────────────────────────────────────────────────────
+   Session hook — anonymous persistent browser identity
+   ────────────────────────────────────────────────────── */
+function generateUUID(): string {
+  // crypto.randomUUID is available in all modern browsers
+  if (typeof crypto !== "undefined" && crypto.randomUUID) {
+    return crypto.randomUUID();
+  }
+  // Fallback for older browsers
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    return (c === "x" ? r : (r & 0x3) | 0x8).toString(16);
+  });
+}
+
+const SESSION_STORAGE_KEY = "url-sentinel-session-id";
+
+function useSessionId(): string {
+  const [sessionId] = useState<string>(() => {
+    if (typeof window !== "undefined") {
+      const existing = localStorage.getItem(SESSION_STORAGE_KEY);
+      if (existing) return existing;
+      const id = generateUUID();
+      localStorage.setItem(SESSION_STORAGE_KEY, id);
+      return id;
+    }
+    return generateUUID();
+  });
+  return sessionId;
+}
+
+/* ──────────────────────────────────────────────────────
    Theme Toggle Button Component
    ────────────────────────────────────────────────────── */
 function ThemeToggle({ theme, onToggle }: { theme: Theme; onToggle: () => void }) {
@@ -480,10 +511,13 @@ export default function App() {
   const [modelInfo, setModelInfo] = useState<ModelInfo | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const { theme, toggleTheme } = useTheme();
+  const sessionId = useSessionId();
 
   const fetchHistory = async () => {
     try {
-      const res = await fetch(`${API_URL}/api/history`);
+      const res = await fetch(`${API_URL}/api/history`, {
+        headers: { "X-Session-Id": sessionId },
+      });
       if (res.ok) {
         const data = await res.json();
         setHistory(data);
@@ -491,7 +525,7 @@ export default function App() {
         throw new Error();
       }
     } catch {
-      const saved = localStorage.getItem("phish-history-girly");
+      const saved = localStorage.getItem(`phish-history-${sessionId}`);
       if (saved) {
         try {
           setHistory(JSON.parse(saved));
@@ -519,9 +553,9 @@ export default function App() {
 
   useEffect(() => {
     if (history.length > 0) {
-      localStorage.setItem("phish-history-girly", JSON.stringify(history.slice(0, 10)));
+      localStorage.setItem(`phish-history-${sessionId}`, JSON.stringify(history.slice(0, 10)));
     }
-  }, [history]);
+  }, [history, sessionId]);
 
   const handleAnalyze = async (u = url) => {
     if (!u.trim()) {
@@ -547,7 +581,10 @@ export default function App() {
     try {
       const res = await fetch(`${API_URL}/api/analyze`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "X-Session-Id": sessionId,
+        },
         body: JSON.stringify({ url: u }),
       });
       if (!res.ok) {

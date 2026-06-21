@@ -240,7 +240,7 @@ class SentinelAPIHandler(BaseHTTPRequestHandler):
         self.send_header("Content-Type", "application/json")
         self.send_header("Access-Control-Allow-Origin", "*")
         self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-        self.send_header("Access-Control-Allow-Headers", "Content-Type")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type, X-Session-Id")
         self.end_headers()
         self.wfile.write(json.dumps(data).encode("utf-8"))
 
@@ -248,7 +248,7 @@ class SentinelAPIHandler(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header("Access-Control-Allow-Origin", "*")
         self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-        self.send_header("Access-Control-Allow-Headers", "Content-Type")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type, X-Session-Id")
         self.end_headers()
 
     def do_GET(self) -> None:
@@ -257,8 +257,9 @@ class SentinelAPIHandler(BaseHTTPRequestHandler):
 
         if path == "/api/history":
             try:
-                # Fetch past scans
-                history = db.get_recent_predictions(20)
+                # Fetch past scans scoped to the caller's session
+                session_id = self.headers.get("X-Session-Id", "").strip()
+                history = db.get_recent_predictions(20, session_id=session_id)
                 formatted_history = []
                 for h in history:
                     formatted_history.append(format_prediction_result(
@@ -339,7 +340,8 @@ class SentinelAPIHandler(BaseHTTPRequestHandler):
                 prediction = int(score >= threshold)
 
                 # Persist result (store original URL for display)
-                db.insert_prediction(url, prediction, score, threshold, best_model_name)
+                session_id = self.headers.get("X-Session-Id", "").strip()
+                db.insert_prediction(url, prediction, score, threshold, best_model_name, session_id=session_id)
 
                 # Format and return UI payload (original URL for display)
                 result = format_prediction_result(
